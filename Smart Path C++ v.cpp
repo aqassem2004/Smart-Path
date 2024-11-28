@@ -65,6 +65,7 @@ int main() {
         cout << "From: "; cin >> u;
         cout << "To: "; cin >> v;
         adjacency[u].push_back(v); // Add road from u to v
+        adjacency[u].push_back(v); // And add road from v to u
         if (i != roads_num - 1) {
             cout << "Next road\n"; // Prompt for the next road if it's not the last road
         }
