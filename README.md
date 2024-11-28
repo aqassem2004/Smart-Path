@@ -23,6 +23,8 @@ This approach guarantees efficient search operations by minimizing the time requ
 ![](image/e1,2.png)
 ### After dividing it into levels, we can determine the minimum number of moves possible to reach the goal.
 ![](image/e1,3.png)
+### By tracing the target's parent we can get to the source and print that path in reverse.
+![](image/e1,4.png)
 
 
 
