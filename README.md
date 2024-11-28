@@ -21,7 +21,7 @@ This approach guarantees efficient search operations by minimizing the time requ
 ![](image/e1,1.png)
  ### BFS view
 ![](image/e1,2.png)
-### After dividing it into levels, we can determine the minimum number of steps possible to reach the goal.
+### After dividing it into levels, we can determine the minimum number of moves possible to reach the goal.
 ![](image/e1,3.png)
 
 
