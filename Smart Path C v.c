@@ -148,6 +148,9 @@ int main() {
         int j = 0;
         while (adjacency[u][j] != -1) j++; // Find the first empty space in the adjacency list
         adjacency[u][j] = v; // Add city v as a neighbor of city u
+        j=0;
+        while (adjacency[v][j] != -1) j++; 
+        adjacency[v][j] = u; // and city u as a neighbor of city v 
 
         if(i != roads_num - 1)
             printf("Next road\n"); // Inform the user to input the next road if not the last road
