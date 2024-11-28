@@ -12,3 +12,8 @@ The program takes in a set of cities, represented by integers, and roads connect
 The main challenge of this project was to implement the algorithm in C while focusing on low-level programming aspects, such as pointer manipulation and dynamic memory allocation. The BFS algorithm was implemented using a linked list-based queue, which demonstrates how low-level concepts can be applied to classic algorithms.
 
 Additionally, a C++ version of the same code will be provided for comparison and clarification.
+
+# Clarifying the idea
+The application constructs a Graph using an Adjacency List to optimize data handling and performance. It then utilizes the [BFS (Breadth-First Search)](https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/) algorithm to divide the Graph into levels, ensuring that each node within a level is visited at most once.
+
+This approach guarantees efficient search operations by minimizing the time required to reach the desired nodes. For further clarification, some illustrative images are provided below.
