@@ -19,7 +19,7 @@ The application constructs a Graph using an Adjacency List to optimize data hand
 This approach guarantees efficient search operations by minimizing the time required to reach the desired nodes. For further clarification, some illustrative images are provided below.
 ## EXP 1
 ![](image/e1,1.png)
- ###BFS view
+ ### BFS view
 ![](image/e1,2.png)
 
 
