@@ -20,7 +20,8 @@ This approach guarantees efficient search operations by minimizing the time requ
 ## EXP 1
 ![](image/e1,1.png)
 
-> <a2>BFS will see graph like this</a2>
+> <a2>BFS view</a2>
+
 ![](image/e1,2.png)
 
 
