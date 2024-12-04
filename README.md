@@ -1,3 +1,7 @@
+
+![](image/intro.png)
+
+
 # Smart Path 
 This project is a pathfinding algorithm that allows users to input cities and the roads between them. The goal is to compute the shortest path between a starting city and a destination city using the [BFS (Breadth-First Search)](https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/).
 
