@@ -14,11 +14,13 @@ int *adjacency[MAX_CITIES + 1];
 int *distance_count;
 int *path;
 int source = -1, destination = -1;
-struct point {
+
+typedef struct point {
     int x;
     int y;
-};
-
+}point;
+                        /*Start implementing the queue*/
+/////////////////////////////////////////////////////////////////////////////////
 typedef struct QueueNode {
     int city;
     struct QueueNode *next;
@@ -33,11 +35,11 @@ void initQueue(Queue *queue) {
     queue->front = queue->back = NULL;
 }
 
-bool isQueueEmpty(Queue *queue) {
+bool Empty(Queue *queue) {
     return queue->front == NULL;
 }
 
-void enqueue(Queue *queue, int city) {
+void push(Queue *queue, int city) {
     QueueNode *newNode = (QueueNode *)malloc(sizeof(QueueNode));
     newNode->city = city;
     newNode->next = NULL;
@@ -50,8 +52,8 @@ void enqueue(Queue *queue, int city) {
     }
 }
 
-int dequeue(Queue *queue) {
-    if (isQueueEmpty(queue)) {
+int pop(Queue *queue) {
+    if (Empty(queue)) {
         return -1;
     }
 
@@ -68,20 +70,41 @@ int dequeue(Queue *queue) {
 }
 
 void freeQueue(Queue *queue) {
-    while (!isQueueEmpty(queue)) {
-        dequeue(queue);
+    while (!Empty(queue)) {
+        pop(queue);
     }
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+
+                        /*Graphics Functions*/
+/////////////////////////////////////////////////////////////////////////////////
+void print_colored_road( point city1,  point city2, int color) {
+    setcolor(color);
+    line(city1.x, city1.y + radius, city2.x, city2.y - radius);
+}
+
+void print_colored_city( point city, int val, int color) {
+    setcolor(color);
+    circle(city.x, city.y, radius);
+    char s[10];
+    sprintf(s, "%d", val);
+    outtextxy(city.x - 5, city.y - 8, s);
+}
+/////////////////////////////////////////////////////////////////////////////////
+
+
+                        /*Algorithm implementation*/
+/////////////////////////////////////////////////////////////////////////////////
 bool BFS(int source) {
     Queue queue;
     initQueue(&queue);
     bool found = false;
     distance_count[source] = 0;
-    enqueue(&queue, source);
+    push(&queue, source);
 
-    while (!isQueueEmpty(&queue)) {
-        int parent = dequeue(&queue);
+    while (!Empty(&queue)) {
+        int parent = pop(&queue);
 
         for (int *neighbor = adjacency[parent]; *neighbor != -1; neighbor++) {
             int child = *neighbor;
@@ -91,7 +114,7 @@ bool BFS(int source) {
                 if (child == destination) {
                     found = true;
                 }
-                enqueue(&queue, child);
+                push(&queue, child);
                 distance_count[child] = distance_count[parent] + 1;
             }
         }
@@ -101,22 +124,38 @@ bool BFS(int source) {
     return found;
 }
 
-void build_path_string(int city, char *buffer) {
-    if (city == source) {
-        char temp[10];
-        sprintf(temp, "%d", city);
-        strcat(buffer, temp);
-        return;
-    }
-    build_path_string(path[city], buffer);
-    strcat(buffer, " ---> ");
+void generate_best_path(int source, int destination, point cities[], int *path) {
+    int current = destination;
+    char path_string[500] = {0};
     char temp[10];
-    sprintf(temp, "%d", city);
-    strcat(buffer, temp);
-}
+    strcat(path_string, "This is best path  ");
+    while (current != source) {
+        print_colored_road(cities[path[current]], cities[current], LIGHTBLUE);
+        print_colored_city(cities[current], current, LIGHTBLUE);
 
+        sprintf(temp, "%d", current);
+        strcat(path_string, temp);
+        strcat(path_string, " <--- ");
+        
+        delay(750); 
+        current = path[current];
+    }
+    
+    sprintf(temp, "%d", source);
+    strcat(path_string, temp);
+
+    print_colored_city(cities[source], source, LIGHTGREEN);
+    print_colored_city(cities[destination], destination, LIGHTMAGENTA);
+    setcolor(WHITE);
+    outtextxy(200, 600, path_string);
+}                        
+/////////////////////////////////////////////////////////////////////////////////
+
+
+                        /*Organize city locations on the screen*/
+/////////////////////////////////////////////////////////////////////////////////
 #define PI 3.14159
-void generate_geometric_cities(struct point cities[], int city_count, int center_x, int center_y) {
+void generate_geometric_cities( point cities[], int city_count, int center_x, int center_y) {
     int _radius = 200;
     float angle_step = 2 * PI / city_count; 
     for (int i = 1; i <= city_count; i++) {
@@ -124,49 +163,30 @@ void generate_geometric_cities(struct point cities[], int city_count, int center
         cities[i].y = center_y + (int)(_radius * sin(i * angle_step));
     }
 }
+/////////////////////////////////////////////////////////////////////////////////
 
-void draw_colored_road(struct point city1, struct point city2, int color) {
-    setcolor(color);
-    line(city1.x, city1.y + radius, city2.x, city2.y - radius);
-}
 
-void print_colored_city(struct point city, int val, int color) {
-    setcolor(color);
-    circle(city.x, city.y, radius);
-    char s[10];
-    sprintf(s, "%d", val);
-    outtextxy(city.x - 5, city.y - 8, s);
-}
-
-void animate_path(int source, int destination, struct point cities[], int *path) {
-    int current = destination;
-    while (current != source) {
-        draw_colored_road(cities[path[current]], cities[current], LIGHTBLUE);
-        print_colored_city(cities[current], current, LIGHTBLUE);
-        delay(750); 
-        current = path[current];
-    }
-    print_colored_city(cities[source], source, LIGHTGREEN);
-    print_colored_city(cities[destination], destination, LIGHTMAGENTA);
-}
-void print_road(struct point city1, struct point city2) {
-    line(city1.x, city1.y + radius, city2.x, city2.y - radius);
-}
 int main() {
-    int gm, gd = DETECT;
+
+         /*Defining libraries and running the display screen*/
+/////////////////////////////////////////////////////////////////////////////////
     char data[] = "C:\\MinGW\\lib\\libbgi.a"; 
     initwindow(1000, 700, data); 
     settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
+/////////////////////////////////////////////////////////////////////////////////
 
-    freopen("Test2.txt", "r", stdin);
+    freopen("Test3.txt", "r", stdin);//Open test file
 
     scanf("%d %d", &citys_num, &roads_num);
 
-    struct point cities[citys_num + 1];
+    point cities[citys_num + 1];
     generate_geometric_cities(cities, citys_num, 500, 350);
+    
     for (int i = 1; i <= citys_num; i++) {
         print_colored_city(cities[i], i, WHITE);
     }
+                        /*Memory processing*/
+//////////////////////////////////////////////////////////////////////////////////
 
     distance_count = (int *)malloc((citys_num + 1) * sizeof(int));
     path = (int *)malloc((citys_num + 1) * sizeof(int));
@@ -178,6 +198,10 @@ int main() {
         }
         distance_count[i] = OO;
     }
+//////////////////////////////////////////////////////////////////////////////////
+
+                        /*Read input*/
+//////////////////////////////////////////////////////////////////////////////////
 
     for (int i = 0; i < roads_num; i++) {
         int u, v;
@@ -190,34 +214,44 @@ int main() {
         while (adjacency[v][j] != -1)
             j++;
         adjacency[v][j] = u;
-        print_road(cities[u], cities[v]);
+        print_colored_road(cities[u], cities[v],WHITE);
     }
-
     scanf("%d %d", &source, &destination);
-   char message1[200] = {0};
+//////////////////////////////////////////////////////////////////////////////////
+
+
+                        /*Call Algorithm*/
+//////////////////////////////////////////////////////////////////////////////////
+   char message1[50] = {0};
     sprintf(message1, "From %d   To %d", source, destination);
     outtextxy(350, 50, message1);
-    char message2[200] = {0};
+    char message2[50] = "You can't reach this city.";
 
     if (BFS(source)) {
-        strcpy(message2, "Path: ");
-        build_path_string(destination, message2);
-
-        animate_path(source, destination, cities, path);
+        generate_best_path(source, destination, cities, path);
 
     } else {
-        strcpy(message2, "You can't reach this city.");
+        outtextxy(200, 600, message2);
     }
+//////////////////////////////////////////////////////////////////////////////////
 
-    outtextxy(200, 600, message2);
 
+
+                        /*Clear memory*/
+/////////////////////////////////////////////////////////////////////////////////   
     for (int i = 1; i <= citys_num; i++) {
         free(adjacency[i]);
     }
     free(distance_count);
     free(path);
+/////////////////////////////////////////////////////////////////////////////////   
 
+
+                        /*Close window*/
+/////////////////////////////////////////////////////////////////////////////////
     getch();
     closegraph();
+/////////////////////////////////////////////////////////////////////////////////
+
     return 0;
 }
