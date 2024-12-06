@@ -25,7 +25,8 @@ The application constructs a Graph using an Adjacency List to optimize data hand
 
 # Techniques and resources used
 - graphics.h library for graphics
-- conio.h library To deal with the operating system 
+- conio.h library To deal with the operating system
+- Turtle Python library for graphics(Only in the improved version.)
 
 This approach guarantees efficient search operations by minimizing the time required to reach the desired nodes. For further clarification, some illustrative images are provided below.
 ## EXP 1
