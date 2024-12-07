@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <graphics.h>
-#include <string.h> 
+#include <string.h>
 #include <math.h>
-#include <conio.h> 
+#include <conio.h>
 
 const int radius = 15, start_x = 300, start_y = 50;
 #define OO 0x3f3f3f3f
@@ -18,7 +18,8 @@ int source = -1, destination = -1;
 typedef struct point {
     int x;
     int y;
-}point;
+} point;
+
                         /*Start implementing the queue*/
 /////////////////////////////////////////////////////////////////////////////////
 typedef struct QueueNode {
@@ -27,64 +28,63 @@ typedef struct QueueNode {
 } QueueNode;
 
 typedef struct Queue {
-    QueueNode *front;
-    QueueNode *back;
-} Queue;
+    QueueNode *front = NULL;
+    QueueNode *back = NULL;
 
-void initQueue(Queue *queue) {
-    queue->front = queue->back = NULL;
-}
-
-bool Empty(Queue *queue) {
-    return queue->front == NULL;
-}
-
-void push(Queue *queue, int city) {
-    QueueNode *newNode = (QueueNode *)malloc(sizeof(QueueNode));
-    newNode->city = city;
-    newNode->next = NULL;
-
-    if (queue->back == NULL) {
-        queue->front = queue->back = newNode;
-    } else {
-        queue->back->next = newNode;
-        queue->back = newNode;
-    }
-}
-
-int pop(Queue *queue) {
-    if (Empty(queue)) {
-        return -1;
+    // Check if the queue is empty
+    bool Empty() {
+        return front == NULL;
     }
 
-    QueueNode *temp = queue->front;
-    int city = temp->city;
-    queue->front = queue->front->next;
+    // Push a new element to the queue
+    void push(int city) {
+        QueueNode *newNode = (QueueNode *)malloc(sizeof(QueueNode));
+        newNode->city = city;
+        newNode->next = NULL;
 
-    if (queue->front == NULL) {
-        queue->back = NULL;
+        if (back == NULL) {
+            front = back = newNode;
+        } else {
+            back->next = newNode;
+            back = newNode;
+        }
     }
 
-    free(temp);
-    return city;
-}
+    // Pop an element from the queue
+    int pop() {
+        if (Empty()) {
+            return -1;
+        }
 
-void freeQueue(Queue *queue) {
-    while (!Empty(queue)) {
-        pop(queue);
+        QueueNode *temp = front;
+        int city = temp->city;
+        front = front->next;
+
+        if (front == NULL) {
+            back = NULL;
+        }
+
+        free(temp);
+        return city;
     }
-}
 
+    // Free all nodes in the queue
+    void freeQueue() {
+        while (!Empty()) {
+            pop();
+        }
+    }
+}Queue;
 /////////////////////////////////////////////////////////////////////////////////
 
                         /*Graphics Functions*/
 /////////////////////////////////////////////////////////////////////////////////
-void print_colored_road( point city1,  point city2, int color) {
+void print_colored_road(point city1, point city2, int color) {
     setcolor(color);
     line(city1.x, city1.y + radius, city2.x, city2.y - radius);
 }
 
-void print_colored_city( point city, int val, int color) {
+void print_colored_city(point city, int val, int color) {
     setcolor(color);
     circle(city.x, city.y, radius);
     char s[10];
@@ -93,18 +93,15 @@ void print_colored_city( point city, int val, int color) {
 }
 /////////////////////////////////////////////////////////////////////////////////
 
-
                         /*Algorithm implementation*/
 /////////////////////////////////////////////////////////////////////////////////
 bool BFS(int source) {
     Queue queue;
-    initQueue(&queue);
     bool found = false;
     distance_count[source] = 0;
-    push(&queue, source);
-
-    while (!Empty(&queue)) {
-        int parent = pop(&queue);
+    queue.push(source);
+    while (!queue.Empty()) {
+        int parent = queue.pop();
 
         for (int *neighbor = adjacency[parent]; *neighbor != -1; neighbor++) {
             int child = *neighbor;
@@ -114,15 +111,15 @@ bool BFS(int source) {
                 if (child == destination) {
                     found = true;
                 }
-                push(&queue, child);
+                queue.push(child);
                 distance_count[child] = distance_count[parent] + 1;
             }
         }
     }
-
-    freeQueue(&queue);
+    queue.freeQueue();
     return found;
 }
+
 
 void generate_best_path(int source, int destination, point cities[], int *path) {
     int current = destination;
@@ -151,11 +148,10 @@ void generate_best_path(int source, int destination, point cities[], int *path) 
 }                        
 /////////////////////////////////////////////////////////////////////////////////
 
-
                         /*Organize city locations on the screen*/
 /////////////////////////////////////////////////////////////////////////////////
 #define PI 3.14159
-void generate_geometric_cities( point cities[], int city_count, int center_x, int center_y) {
+void generate_geometric_cities(point cities[], int city_count, int center_x, int center_y) {
     int _radius = 200;
     float angle_step = 2 * PI / city_count; 
     for (int i = 1; i <= city_count; i++) {
@@ -164,7 +160,6 @@ void generate_geometric_cities( point cities[], int city_count, int center_x, in
     }
 }
 /////////////////////////////////////////////////////////////////////////////////
-
 
 int main() {
 
@@ -175,7 +170,7 @@ int main() {
     settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
 /////////////////////////////////////////////////////////////////////////////////
 
-    freopen("Test3.txt", "r", stdin);//Open test file
+    freopen("Test1.txt", "r", stdin);//Open test file
 
     scanf("%d %d", &citys_num, &roads_num);
 
@@ -183,7 +178,10 @@ int main() {
     generate_geometric_cities(cities, citys_num, 500, 350);
     
     for (int i = 1; i <= citys_num; i++) {
+
         print_colored_city(cities[i], i, WHITE);
+        delay(250); 
+
     }
                         /*Memory processing*/
 //////////////////////////////////////////////////////////////////////////////////
@@ -214,15 +212,16 @@ int main() {
         while (adjacency[v][j] != -1)
             j++;
         adjacency[v][j] = u;
-        print_colored_road(cities[u], cities[v],WHITE);
+        print_colored_road(cities[u], cities[v], WHITE);
+        delay(250); 
+
     }
     scanf("%d %d", &source, &destination);
 //////////////////////////////////////////////////////////////////////////////////
 
-
                         /*Call Algorithm*/
 //////////////////////////////////////////////////////////////////////////////////
-   char message1[50] = {0};
+    char message1[50] = {0};
     sprintf(message1, "From %d   To %d", source, destination);
     outtextxy(350, 50, message1);
     char message2[50] = "You can't reach this city.";
@@ -235,8 +234,6 @@ int main() {
     }
 //////////////////////////////////////////////////////////////////////////////////
 
-
-
                         /*Clear memory*/
 /////////////////////////////////////////////////////////////////////////////////   
     for (int i = 1; i <= citys_num; i++) {
@@ -245,7 +242,6 @@ int main() {
     free(distance_count);
     free(path);
 /////////////////////////////////////////////////////////////////////////////////   
-
 
                         /*Close window*/
 /////////////////////////////////////////////////////////////////////////////////
