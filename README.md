@@ -28,7 +28,8 @@ The application constructs a Graph using an Adjacency List to optimize data hand
 - conio.h library To deal with the operating system
 - Turtle Python library for graphics(Only in the improved version.)
 
-> We have recorded a video on YouTube explaining the idea and how to use it [Here](https://www.youtube.com/watch?v=g3orWMzgXCk&t=36s)
+> We have recorded a video on YouTube explaining the idea and how to use it [![Smart Path ](https://img.youtube.com/watch?v=g3orWMzgXCk&t=36s.jpg)](https://www.youtube.com/watch?v=g3orWMzgXCk&t=36s)
+
 
 This approach guarantees efficient search operations by minimizing the time required to reach the desired nodes. For further clarification, some illustrative images are provided below.
 ## EXP 1
