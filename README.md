@@ -28,7 +28,7 @@ The application constructs a Graph using an Adjacency List to optimize data hand
 - conio.h library To deal with the operating system
 - Turtle Python library for graphics(Only in the improved version.)
 
-> We have recorded a video on YouTube explaining the idea and how to use it [![Smart Path](https://img.youtube.com/vi/g3orWMzgXCk/hqdefault.jpg)](https://www.youtube.com/watch?v=g3orWMzgXCk&t=36s)
+> We have recorded a video on YouTube explaining the idea and how to use it [![Smart Path](https://img.youtube.com/vi/g3orWMzgXCk/hqdefault.jpg)](https://www.youtube.com/watch?v=g3orWMzgXCk&t)
 
 
 
